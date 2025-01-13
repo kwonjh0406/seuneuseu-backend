@@ -9,7 +9,7 @@
   - shadcn/ui
 - [백엔드] MySQL 8.4
 - [인프라] AWS
-  - EC2, ELB(ALB), Route53
+  - EC2, ELB(ALB, 비용 문제로 인한 인스턴스 로드밸런싱은 X, HTTPS 통신 지원을 위해 사용), Route53
 - [인프라] GCP
   - Cloud SQL
 - [도구] Git
