@@ -17,7 +17,8 @@
 - [백엔드] Nginx
 
 # 인프라 아키텍처
-사진
+![제목 없는 다이어그램-2-2 drawio](https://github.com/user-attachments/assets/59ca8841-7466-47c1-a8e8-2522bb45729d)
+
 
 # 진행 기간
 - 요구 분석 및 설계 : 5일
