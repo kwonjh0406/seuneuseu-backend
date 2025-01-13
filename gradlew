@@ -249,4 +249,4 @@ eval "set -- $(
         tr '\n' ' '
     )" '"$@"'
 
-exec "$JAVACMD" "$@"
+exec "$JAVACMD" "$@"peo2j fio

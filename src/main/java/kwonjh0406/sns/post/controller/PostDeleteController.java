@@ -2,6 +2,7 @@ package kwonjh0406.sns.post.controller;
 
 import kwonjh0406.sns.global.dto.ApiResponse;
 import kwonjh0406.sns.post.service.PostService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-//@Slf4j
+@Slf4j
 @RestController
 @RequestMapping("/api/post")
 public class PostDeleteController {

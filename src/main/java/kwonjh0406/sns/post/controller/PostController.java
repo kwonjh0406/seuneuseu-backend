@@ -4,12 +4,14 @@ import kwonjh0406.sns.post.dto.ApiResponse;
 import kwonjh0406.sns.post.dto.CreatePostRequest;
 import kwonjh0406.sns.post.dto.PostResponse;
 import kwonjh0406.sns.post.service.PostService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 public class PostController {
 
@@ -33,6 +35,7 @@ public class PostController {
                     new ApiResponse(401, "인증되지 않은 사용자입니다.")
             );
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return ResponseEntity.status(500).body(
                     new ApiResponse(500, "서버 오류가 발생했습니다.")
             );
