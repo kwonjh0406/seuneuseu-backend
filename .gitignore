@@ -40,4 +40,5 @@ out/
 
 ###
 
-application-sec.yaml
+application-sec-dev.yaml
+application-sec-pro.yaml

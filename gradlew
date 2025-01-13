@@ -248,5 +248,6 @@ eval "set -- $(
         sed ' s~[^-[:alnum:]+,./:=@_]~\\&~g; ' |
         tr '\n' ' '
     )" '"$@"'
+# 예시: gradlew 파일 내 잘못된 부분
+exec "$JAVACMD" "$@"
 
-exec "$JAVACMD" "$@"peo2j fio
