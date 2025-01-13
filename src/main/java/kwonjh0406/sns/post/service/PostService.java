@@ -50,14 +50,15 @@ public class PostService {
                     .replies(0L)
                     .build();
             postRepository.save(post);
-
-            for (MultipartFile imageFile : createPostRequest.getImages()) {
-                String imageUrl = s3Service.uploadImageToS3(imageFile);
-                PostImage postImage = PostImage.builder()
-                        .imageUrl(imageUrl)
-                        .post(post)
-                        .build();
-                postImageRepository.save(postImage);
+            if(createPostRequest.getImages() != null) {
+                for (MultipartFile imageFile : createPostRequest.getImages()) {
+                    String imageUrl = s3Service.uploadImageToS3(imageFile);
+                    PostImage postImage = PostImage.builder()
+                            .imageUrl(imageUrl)
+                            .post(post)
+                            .build();
+                    postImageRepository.save(postImage);
+                }
             }
         }
     }
