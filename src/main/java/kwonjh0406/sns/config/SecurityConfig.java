@@ -3,7 +3,8 @@ package kwonjh0406.sns.config;
 import kwonjh0406.sns.infrastructrue.CustomAuthenticationSuccessHandler;
 import kwonjh0406.sns.infrastructrue.IsNewCheckFilter;
 import kwonjh0406.sns.oauth2.service.CustomOAuth2UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,12 +15,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomAuthenticationSuccessHandler successHandler;
     private final IsNewCheckFilter isNewCheckFilter;
+
+    @Value("${base.url}")
+    private String baseUrl;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,7 +42,7 @@ public class SecurityConfig {
                         .successHandler(successHandler) // OAuth2 로그인 후에 초기 설정 페이지 여부를 판단하는 핸들러
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("http://localhost:3000/").permitAll()
+                        .logoutSuccessUrl(baseUrl + "/logout-success").permitAll()
                 )
                 .addFilterBefore(isNewCheckFilter, UsernamePasswordAuthenticationFilter.class); // 초기 설정을 마치지 않은 사용자로 부터 요청이 들어오면 로그아웃 시킴
 
