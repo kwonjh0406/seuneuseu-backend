@@ -13,7 +13,7 @@ spring:
       hibernate.hibernate.format_sql: true
 
   config:
-    import: application-sec-pro.yaml
+    import: application-sec-dev.yaml
 
 server:
   port: 8080

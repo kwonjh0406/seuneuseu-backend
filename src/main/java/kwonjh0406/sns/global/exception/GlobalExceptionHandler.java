@@ -1,11 +1,14 @@
 package kwonjh0406.sns.global.exception;
 
 import kwonjh0406.sns.global.dto.ApiResponse;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.Optional;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,8 +26,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiResponse<Void>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         return ResponseEntity.badRequest()
-                .body(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+                .body(
+                        ApiResponse.<Void>builder()
+                                .statusCode(HttpStatus.BAD_REQUEST.value())
+                                .message(Optional.ofNullable(ex.getBindingResult().getFieldError())
+                                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                                        .orElse("Unknown validation error")
+                                )
+                                .data(null)
+                                .build()
+                );
     }
 }
