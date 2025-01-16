@@ -1,6 +1,7 @@
 package kwonjh0406.sns.user.service;
 
 
+import kwonjh0406.sns.aws.s3.service.S3Service;
 import kwonjh0406.sns.global.exception.UsernameAlreadyExistsException;
 import kwonjh0406.sns.oauth2.dto.CustomOAuth2User;
 import kwonjh0406.sns.user.dto.UserProfileResponse;
@@ -13,31 +14,40 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 @AllArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final S3Service s3Service;
 
-    public void setWelcomeProfile(WelcomeProfileSetupDTO welcomeProfileSetupDTO) {
+    public void setWelcomeProfile(WelcomeProfileSetupDTO welcomeProfileSetupDTO) throws IOException {
 
         String username = welcomeProfileSetupDTO.getUsername();
         String name = welcomeProfileSetupDTO.getName();
+        String profileImageUrl;
 
         if (userRepository.existsByUsername(username)) {
             throw new UsernameAlreadyExistsException("이미 사용 중인 사용자 아이디입니다.");
         }
 
+        if (welcomeProfileSetupDTO.getProfileImage() != null) {
+            profileImageUrl = s3Service.uploadImageToS3(welcomeProfileSetupDTO.getProfileImage());
+        } else {
+            profileImageUrl = null;
+        }
+
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof CustomOAuth2User oAuth2User) { // 로그인 된 사용자가 OAuth2 사용자인 경우
-            System.out.println("예?");
             User user = oAuth2User.getUser();
             user.setUsername(username);
             user.setName(name);
             user.setFollowing(0L);
             user.setFollower(0L);
-            user.setProfileImageUrl("https://www.gravatar.com/avatar/?d=mp");
+            user.setProfileImageUrl(profileImageUrl);
             user.setIsNew(false);
             userRepository.save(user);
         }
