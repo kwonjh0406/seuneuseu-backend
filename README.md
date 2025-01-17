@@ -14,6 +14,10 @@
 - 2025.01.16 서버 터짐. 원인 파악 중
   - Ec2 인스턴스 시피유 사용량 100 찍고 터짐. 메모리도 아니고 시피유? 재부팅 후 해결. 최적화를 해야될듯?
 
+# 최적화
+- ORM 쿼리들 Native Query로 변경 과정 진행 중 기존에는 ORM으로 가져와서 자바 코드로 필터링을 하던 과정들이 많았음.
+
+
 # 기술 스택
 - [백엔드] Spring Boot
   - Spring Data JPA, Spring Security, Spring Web MVC
