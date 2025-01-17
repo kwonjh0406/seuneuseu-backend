@@ -19,7 +19,7 @@ public class IsNewCheckFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getRequestURI().equals("/api/welcome-profile-setup")) {
+        if (request.getRequestURI().equals("/api/user/welcome-profile-setup")) {
             filterChain.doFilter(request, response); // 필터를 거치지 않고 바로 다음 필터로 이동
             return;
         }

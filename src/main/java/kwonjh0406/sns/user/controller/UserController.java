@@ -2,24 +2,23 @@ package kwonjh0406.sns.user.controller;
 
 import jakarta.validation.Valid;
 import kwonjh0406.sns.global.dto.ApiResponse;
-import kwonjh0406.sns.user.dto.UserProfileResponse;
-import kwonjh0406.sns.user.dto.WelcomeProfileSetupDTO;
+import kwonjh0406.sns.user.dto.*;
 import kwonjh0406.sns.user.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/api/welcome-profile-setup")
+    @PostMapping("/welcome-profile-setup")
     public ResponseEntity<ApiResponse<Void>> updateProfile(@Valid WelcomeProfileSetupDTO welcomeProfileSetupDTO) {
         try {
             userService.setWelcomeProfile(welcomeProfileSetupDTO);
@@ -43,10 +42,62 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/user/profile/{username}")
+    @GetMapping("/profile/{username}")
     public ResponseEntity<UserProfileResponse> getUser(@PathVariable String username) {
         UserProfileResponse userProfileResponse = userService.getUserProfileByUsername(username);
         return ResponseEntity.ok(userProfileResponse);
     }
+
+    @GetMapping("/me/profile")
+    public ResponseEntity<ApiResponse<ProfileEditResponse>> getMyProfile() {
+        try {
+            ProfileEditResponse profileEditResponse = userService.getProfileEdit();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            ApiResponse.<ProfileEditResponse>builder()
+                                    .statusCode(HttpStatus.OK.value())
+                                    .message(null)
+                                    .data(profileEditResponse)
+                                    .build()
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(
+                            ApiResponse.<ProfileEditResponse>builder()
+                                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                                    .message(null)
+                                    .data(null)
+                                    .build()
+                    );
+        }
+    }
+
+
+    @PutMapping("/me/profile")
+    public ResponseEntity<ApiResponse<Void>> profileEdit(ProfileEditRequest profileEditRequest) {
+        try {
+            userService.editProfile(profileEditRequest);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(
+                            ApiResponse.<Void>builder()
+                                    .statusCode(HttpStatus.OK.value())
+                                    .message(null)
+                                    .data(null)
+                                    .build()
+                    );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(
+                            ApiResponse.<Void>builder()
+                                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                                    .message(null)
+                                    .data(null)
+                                    .build()
+                    );
+        }
+    }
+
 
 }
