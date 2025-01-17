@@ -2,10 +2,14 @@ package kwonjh0406.sns.post.repository;
 
 import kwonjh0406.sns.post.entity.Post;
 import kwonjh0406.sns.post.entity.PostImage;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
 public interface PostImageRepository extends CrudRepository<PostImage, Long> {
-    public List<PostImage> findByPost(Post post);
+    List<PostImage> findByPost(Post post);
+
+    @Query(value = "SELECT imageUrl FROM PostImage WHERE post_id = :postId", nativeQuery = true)
+    List<String> findAllImageUrlsByPostId(Long postId);
 }

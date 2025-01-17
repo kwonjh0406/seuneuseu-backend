@@ -1,5 +1,6 @@
 package kwonjh0406.sns.post.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import kwonjh0406.sns.aws.s3.service.S3Service;
 import kwonjh0406.sns.oauth2.dto.CustomOAuth2User;
 import kwonjh0406.sns.post.dto.PostContentDto;
@@ -50,7 +51,7 @@ public class PostService {
                     .replies(0L)
                     .build();
             postRepository.save(post);
-            if(createPostRequest.getImages() != null) {
+            if (createPostRequest.getImages() != null) {
                 for (MultipartFile imageFile : createPostRequest.getImages()) {
                     String imageUrl = s3Service.uploadImageToS3(imageFile);
                     PostImage postImage = PostImage.builder()
@@ -101,25 +102,37 @@ public class PostService {
         return postResponses;
     }
 
-    public void deletePost(Long postId) throws Exception {
+    public void deletePost(Long postId) throws AccessDeniedException {
+        // 굳이 트랜잭션은 필요 없는 로직
 
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NoSuchElementException("Post with ID " + postId + " not found")
-        );
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated()) {
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof CustomOAuth2User oAuth2User) {
-                if (oAuth2User.getUser().getUsername().equals(post.getUser().getUsername())) {
-                    postRepository.delete(post);
-                    return;
-                }
-                else throw new AccessDeniedException("You do not have permission to delete this post.");
-            }
+        // 게시글의 이미지들을 먼저 S3에서 삭제해줌
+        List<String> imageUrls = postImageRepository.findAllImageUrlsByPostId(postId);
+        for (String imageUrl : imageUrls) {
+            s3Service.deleteImageFromS3(imageUrl);
         }
 
-        throw new Exception("Authentication required");
+        // 삭제할 게시글을 가져옴
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new EntityNotFoundException("포스트를 찾을 수 없거나 이미 삭제되었습니다.")
+        );
+
+        // 이후 게시글을 삭제 (게시글 이미지들은 Cascade 제약 걸려있음)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof CustomOAuth2User oAuth2User) {
+                // 로그인 한 사용자와 게시글 작성자가 동일한지 확인
+                if (oAuth2User.getUser().getUsername().equals(post.getUser().getUsername())) {
+                    postRepository.delete(post);
+                } else {
+                    throw new AccessDeniedException("본인의 게시글만 삭제할 수 있습니다.");
+                }
+            } else {
+                throw new AccessDeniedException("Invalid authentication details.");
+            }
+        } else {
+            throw new AccessDeniedException("로그인이 필요합니다.");
+        }
     }
 
 
