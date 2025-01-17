@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .successHandler(successHandler) // OAuth2 로그인 후에 초기 설정 페이지 여부를 판단하는 핸들러
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl(baseUrl + "/logout-success").permitAll()
+                        .logoutSuccessUrl(baseUrl + "/login").permitAll()
                 )
                 .addFilterBefore(isNewCheckFilter, UsernamePasswordAuthenticationFilter.class); // 초기 설정을 마치지 않은 사용자로 부터 요청이 들어오면 로그아웃 시킴
 

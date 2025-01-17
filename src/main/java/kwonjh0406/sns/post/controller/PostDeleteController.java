@@ -29,7 +29,7 @@ public class PostDeleteController {
 
         try {
             postService.deletePost(postId);
-            //log.info("Successfully deleted post with postId {}", postId);
+//            log.info("Successfully deleted post with postId {}", postId);
 
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
@@ -40,7 +40,7 @@ public class PostDeleteController {
                                     .build()
                     );
         } catch (Exception e) {
-            //log.error("Error while deleting post with postId {}", postId, e);
+//            log.error("Error while deleting post with postId {}", postId, e);
 
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

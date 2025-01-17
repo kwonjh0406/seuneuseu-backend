@@ -4,6 +4,7 @@ package kwonjh0406.sns.user.service;
 import kwonjh0406.sns.aws.s3.service.S3Service;
 import kwonjh0406.sns.global.exception.UsernameAlreadyExistsException;
 import kwonjh0406.sns.oauth2.dto.CustomOAuth2User;
+import kwonjh0406.sns.user.dto.SearchUserResponse;
 import kwonjh0406.sns.user.dto.UserProfileResponse;
 import kwonjh0406.sns.user.dto.WelcomeProfileSetupDTO;
 import kwonjh0406.sns.user.entity.User;
@@ -15,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -71,5 +74,9 @@ public class UserService {
         userProfileResponse.setFollowing(user.getFollowing());
         userProfileResponse.setCreatedAt(user.getCreatedAt());
         return userProfileResponse;
+    }
+
+    public List<SearchUserResponse> searchUsers() {
+        return userRepository.findAllUsers();
     }
 }
