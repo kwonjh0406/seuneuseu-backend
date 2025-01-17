@@ -152,4 +152,10 @@ public class PostService {
                 .images(imageUrls)
                 .build();
     }
+
+    public void editPostByPostId(Long postId, String content){
+        Post post = postRepository.findById(postId).orElseThrow();
+        post.setContent(content);
+        postRepository.save(post);
+    }
 }

@@ -4,14 +4,13 @@ package kwonjh0406.sns.user.service;
 import kwonjh0406.sns.aws.s3.service.S3Service;
 import kwonjh0406.sns.global.exception.UsernameAlreadyExistsException;
 import kwonjh0406.sns.oauth2.dto.CustomOAuth2User;
-import kwonjh0406.sns.user.dto.SearchUserResponse;
-import kwonjh0406.sns.user.dto.UserProfileResponse;
-import kwonjh0406.sns.user.dto.WelcomeProfileSetupDTO;
+import kwonjh0406.sns.user.dto.*;
 import kwonjh0406.sns.user.entity.User;
 import kwonjh0406.sns.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
 
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +38,10 @@ public class UserService {
         if (welcomeProfileSetupDTO.getProfileImage() != null) {
             profileImageUrl = s3Service.uploadImageToS3(welcomeProfileSetupDTO.getProfileImage());
         } else {
-            profileImageUrl = null;
+            profileImageUrl = "https://www.gravatar.com/avatar/?d=mp";
         }
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         if (principal instanceof CustomOAuth2User oAuth2User) { // 로그인 된 사용자가 OAuth2 사용자인 경우
             User user = oAuth2User.getUser();
             user.setUsername(username);
@@ -78,5 +76,37 @@ public class UserService {
 
     public List<SearchUserResponse> searchUsers() {
         return userRepository.findAllUsers();
+    }
+
+    public ProfileEditResponse getProfileEdit() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CustomOAuth2User oAuth2User) {
+            ProfileEditResponse profileEditResponse = userRepository.findProfileByUserId(oAuth2User.getUser().getId());
+            return profileEditResponse;
+        }
+        return null;
+    }
+
+    public void editProfile(ProfileEditRequest profileEditRequest) throws Exception {
+
+        if (userRepository.existsByUsername(profileEditRequest.getUsername())) {
+            throw new IllegalIdentifierException("사용중인 아이디");
+        }
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CustomOAuth2User oAuth2User) {
+
+            User user = oAuth2User.getUser();
+            user.setBio(profileEditRequest.getBio());
+            user.setUsername(profileEditRequest.getUsername());
+            user.setName(profileEditRequest.getName());
+
+            if (profileEditRequest.getProfileImage() != null) {
+                s3Service.deleteImageFromS3(user.getProfileImageUrl());
+                String url = s3Service.uploadImageToS3(profileEditRequest.getProfileImage());
+                user.setProfileImageUrl(url);
+            }
+
+            userRepository.save(user);
+        }
     }
 }
