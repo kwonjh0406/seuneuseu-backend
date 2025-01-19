@@ -137,6 +137,7 @@ public class PostService {
 
 
     public PostContentDto getPostByPostId(Long postId) throws Exception {
+
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new NoSuchElementException("Post with ID " + postId + " not found")
         );
