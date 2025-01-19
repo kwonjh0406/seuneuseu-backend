@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/session")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class SessionController {
+public class UserSessionController {
 
     private final SessionService sessionService;
 
-    @GetMapping("/username")
+    @GetMapping("/me")
     public Map<String, String> getCurrentUsername() {
         return sessionService.getCurrentUsername();
     }
