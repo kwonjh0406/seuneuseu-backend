@@ -27,7 +27,6 @@ public class UserSearchController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             ApiResponse.<List<SearchUserResponse>>builder()
-                                    .statusCode(HttpStatus.OK.value())
                                     .message(null)
                                     .data(searchUserResponseList)
                                     .build()
@@ -36,7 +35,6 @@ public class UserSearchController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(
                             ApiResponse.<List<SearchUserResponse>>builder()
-                                    .statusCode(HttpStatus.BAD_REQUEST.value())
                                     .message(e.getMessage())
                                     .data(null)
                                     .build()

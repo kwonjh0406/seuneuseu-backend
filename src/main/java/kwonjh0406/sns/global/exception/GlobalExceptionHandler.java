@@ -1,5 +1,6 @@
 package kwonjh0406.sns.global.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import kwonjh0406.sns.global.dto.ApiResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -13,12 +14,22 @@ import java.util.Optional;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleEntityNotFoundException(EntityNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(
+                        ApiResponse.<Void>builder()
+                                .message(e.getMessage())
+                                .data(null)
+                                .build()
+                );
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGlobalException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
                         ApiResponse.<Void>builder()
-                                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
                                 .message("서버 에러: " + e.getMessage())
                                 .data(null)
                                 .build()
@@ -30,7 +41,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(
                         ApiResponse.<Void>builder()
-                                .statusCode(HttpStatus.BAD_REQUEST.value())
                                 .message(Optional.ofNullable(ex.getBindingResult().getFieldError())
                                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
                                         .orElse("Unknown validation error")

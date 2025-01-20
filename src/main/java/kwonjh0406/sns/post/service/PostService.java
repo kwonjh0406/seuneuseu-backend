@@ -103,36 +103,32 @@ public class PostService {
     }
 
     public void deletePost(Long postId) throws AccessDeniedException {
-        // 굳이 트랜잭션은 필요 없는 로직
-
-        // 게시글의 이미지들을 먼저 S3에서 삭제해줌
-        List<String> imageUrls = postImageRepository.findAllImageUrlsByPostId(postId);
-        for (String imageUrl : imageUrls) {
-            s3Service.deleteImageFromS3(imageUrl);
-        }
-
-        // 삭제할 게시글을 가져옴
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new EntityNotFoundException("포스트를 찾을 수 없거나 이미 삭제되었습니다.")
-        );
-
-        // 이후 게시글을 삭제 (게시글 이미지들은 Cascade 제약 걸려있음)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
+
+        if (authentication != null) {
+            // 삭제할 게시글을 가져옴
+            Post post = postRepository.findById(postId).orElseThrow(
+                    () -> new EntityNotFoundException("포스트를 찾을 수 없거나 이미 삭제되었습니다.")
+            );
+
             Object principal = authentication.getPrincipal();
             if (principal instanceof CustomOAuth2User oAuth2User) {
                 // 로그인 한 사용자와 게시글 작성자가 동일한지 확인
                 if (oAuth2User.getUser().getUsername().equals(post.getUser().getUsername())) {
+                    // 게시글의 이미지들을 먼저 S3에서 삭제해줌
+                    List<String> imageUrls = postImageRepository.findAllImageUrlsByPostId(postId);
+                    for (String imageUrl : imageUrls) {
+                        s3Service.deleteImageFromS3(imageUrl);
+                    }
+                    // 이후 게시글을 삭제 (게시글 이미지들은 Cascade 제약 걸려있음)
                     postRepository.delete(post);
+                    return;
                 } else {
                     throw new AccessDeniedException("본인의 게시글만 삭제할 수 있습니다.");
                 }
-            } else {
-                throw new AccessDeniedException("Invalid authentication details.");
             }
-        } else {
-            throw new AccessDeniedException("로그인이 필요합니다.");
         }
+        throw new AccessDeniedException("로그인이 필요합니다.");
     }
 
 
@@ -154,7 +150,7 @@ public class PostService {
                 .build();
     }
 
-    public void editPostByPostId(Long postId, String content){
+    public void editPostByPostId(Long postId, String content) {
         Post post = postRepository.findById(postId).orElseThrow();
         post.setContent(content);
         postRepository.save(post);
