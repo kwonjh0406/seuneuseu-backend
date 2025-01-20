@@ -44,14 +44,39 @@ public class PostController {
         return postService.getAllPosts();
     }
 
+    @GetMapping("/api/posts/{postId}")
+    public ResponseEntity<ApiResponse<PostResponse>> getPost(@PathVariable Long postId) {
+        try {
+            PostResponse postResponse = postService.getPostByPostId(postId);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            ApiResponse.<PostResponse>builder()
+                                    .data(postResponse)
+                                    .message(null)
+                                    .build()
+                    );
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(
+                            ApiResponse.<PostResponse>builder()
+                                    .data(null)
+                                    .message(e.getMessage())
+                                    .build()
+                    );
+        }
+    }
+
     @DeleteMapping("/api/posts/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long postId) {
         try {
-            postService.deletePost(postId);
+            postService.deletePostByPostId(postId);
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
                     .body(
                             ApiResponse.<Void>builder()
+                                    .data(null)
                                     .message(null)
                                     .build()
                     );
@@ -60,6 +85,7 @@ public class PostController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(
                             ApiResponse.<Void>builder()
+                                    .data(null)
                                     .message(e.getMessage())
                                     .build()
                     );

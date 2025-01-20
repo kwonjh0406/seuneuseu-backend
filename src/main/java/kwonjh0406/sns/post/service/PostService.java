@@ -102,7 +102,18 @@ public class PostService {
         return postResponses;
     }
 
-    public void deletePost(Long postId) throws AccessDeniedException {
+    public PostResponse getPostByPostId(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new EntityNotFoundException("포스트를 찾을 수 없습니다.")
+        );
+        List<PostImage> postImages = postImageRepository.findByPost(post);
+        List<String> imageUrls = postImages.stream()
+                .map(PostImage::getImageUrl)
+                .collect(Collectors.toList());
+        return new PostResponse(post, imageUrls);
+    }
+
+    public void deletePostByPostId(Long postId) throws AccessDeniedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null) {
@@ -132,7 +143,7 @@ public class PostService {
     }
 
 
-    public PostContentDto getPostByPostId(Long postId) throws Exception {
+    public PostContentDto getPostEditByPostId(Long postId) throws Exception {
 
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new NoSuchElementException("Post with ID " + postId + " not found")

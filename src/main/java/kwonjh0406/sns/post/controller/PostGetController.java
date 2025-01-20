@@ -23,7 +23,7 @@ public class PostGetController {
     @GetMapping("/edit/{postId}")
     public ResponseEntity<ApiResponse<PostContentDto>> getContentByPostId(@PathVariable Long postId) {
         try {
-            PostContentDto postContentDto = postService.getPostByPostId(postId);
+            PostContentDto postContentDto = postService.getPostEditByPostId(postId);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(
