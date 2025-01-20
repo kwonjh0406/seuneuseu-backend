@@ -1,22 +1,21 @@
 package kwonjh0406.sns.user.controller;
 
-import kwonjh0406.sns.user.service.SessionService;
+import kwonjh0406.sns.user.dto.UsernameDto;
+import kwonjh0406.sns.user.service.UserSessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/users/me")
 @RequiredArgsConstructor
 public class UserSessionController {
 
-    private final SessionService sessionService;
+    private final UserSessionService userSessionService;
 
-    @GetMapping("/me")
-    public Map<String, String> getCurrentUsername() {
-        return sessionService.getCurrentUsername();
+    @GetMapping("/username")
+    public UsernameDto getCurrentUsername() {
+        return userSessionService.getCurrentUsername();
     }
 }
