@@ -1,11 +1,9 @@
 package kwonjh0406.sns.post.util;
 
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TimeDifference {
 
@@ -33,13 +31,9 @@ public class TimeDifference {
             // 7일 이내인 경우 (일 단위로 출력)
             return duration.toDays() + "일";
         } else {
-            // 7일 이후인 경우 (년-월-일 형식으로 출력)
-            int year = createdAt.getYear();
-            int month = createdAt.getMonth();
-            int day = createdAt.getDay();
-
-            // 한글 단위 추가
-            return year + "년 " + month + "월 " + day + "일";
+            LocalDateTime dateTime = createdAt.toLocalDateTime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일");
+            return dateTime.format(formatter);
         }
     }
 }
