@@ -25,7 +25,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             ApiResponse.<Void>builder()
-                                    .statusCode(HttpStatus.OK.value())
                                     .message(null)
                                     .data(null)
                                     .build()
@@ -34,7 +33,6 @@ public class UserController {
             return ResponseEntity.badRequest()
                     .body(
                             ApiResponse.<Void>builder()
-                                    .statusCode(HttpStatus.BAD_REQUEST.value())
                                     .message(e.getMessage())
                                     .data(null)
                                     .build()
@@ -55,7 +53,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             ApiResponse.<ProfileEditResponse>builder()
-                                    .statusCode(HttpStatus.OK.value())
                                     .message(null)
                                     .data(profileEditResponse)
                                     .build()
@@ -65,7 +62,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(
                             ApiResponse.<ProfileEditResponse>builder()
-                                    .statusCode(HttpStatus.BAD_REQUEST.value())
                                     .message(null)
                                     .data(null)
                                     .build()
@@ -81,7 +77,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             ApiResponse.<Void>builder()
-                                    .statusCode(HttpStatus.OK.value())
                                     .message(null)
                                     .data(null)
                                     .build()
@@ -91,7 +86,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(
                             ApiResponse.<Void>builder()
-                                    .statusCode(HttpStatus.BAD_REQUEST.value())
                                     .message(null)
                                     .data(null)
                                     .build()

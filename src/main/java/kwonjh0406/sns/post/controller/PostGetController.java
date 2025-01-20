@@ -28,7 +28,6 @@ public class PostGetController {
                     .status(HttpStatus.OK)
                     .body(
                             ApiResponse.<PostContentDto>builder()
-                                    .statusCode(HttpStatus.OK.value())
                                     .message("Successfully retrieved post content")
                                     .data(postContentDto)
                                     .build()
@@ -38,7 +37,6 @@ public class PostGetController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(
                             ApiResponse.<PostContentDto>builder()
-                                    .statusCode(HttpStatus.BAD_REQUEST.value())
                                     .message("Failed to retrieve post content")
                                     .data(null)
                                     .build()
@@ -54,7 +52,6 @@ public class PostGetController {
                     .status(HttpStatus.OK)
                     .body(
                             ApiResponse.<Void>builder()
-                                    .statusCode(HttpStatus.OK.value())
                                     .message("Successfully retrieved post content")
                                     .data(null)
                                     .build()
@@ -64,7 +61,6 @@ public class PostGetController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(
                             ApiResponse.<Void>builder()
-                                    .statusCode(HttpStatus.BAD_REQUEST.value())
                                     .message("Failed to retrieve post content")
                                     .data(null)
                                     .build()
