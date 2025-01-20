@@ -64,7 +64,7 @@ public class PostService {
         }
     }
 
-    public List<PostResponse> getAllPostsByUsername(String username) {
+    public List<PostResponse> getPostsByUsername(String username) {
 
         User user = userRepository.findByUsername(username);
 
