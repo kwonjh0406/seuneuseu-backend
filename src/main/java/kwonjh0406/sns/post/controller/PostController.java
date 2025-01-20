@@ -39,11 +39,6 @@ public class PostController {
         }
     }
 
-    @GetMapping("/api/posts/username")
-    public List<PostResponse> getAllPostsByUsername(@RequestParam String username) {
-        return postService.getAllPostsByUsername(username);
-    }
-
     @GetMapping("/api/posts")
     public List<PostResponse> getAllPosts() {
         return postService.getAllPosts();
