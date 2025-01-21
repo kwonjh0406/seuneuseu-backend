@@ -87,25 +87,29 @@ public class UserService {
         return null;
     }
 
-    public void editProfile(ProfileEditRequest profileEditRequest) throws Exception {
-
-        if (userRepository.existsByUsername(profileEditRequest.getUsername())) {
-            throw new IllegalIdentifierException("사용중인 아이디");
-        }
+    public void editProfile(ProfileEditRequest profileEditRequest) throws IOException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof CustomOAuth2User oAuth2User) {
 
+        if (principal instanceof CustomOAuth2User oAuth2User) {
             User user = oAuth2User.getUser();
-            user.setBio(profileEditRequest.getBio());
-            user.setUsername(profileEditRequest.getUsername());
-            user.setName(profileEditRequest.getName());
 
             if (profileEditRequest.getProfileImage() != null) {
                 s3Service.deleteImageFromS3(user.getProfileImageUrl());
                 String url = s3Service.uploadImageToS3(profileEditRequest.getProfileImage());
                 user.setProfileImageUrl(url);
             }
-
+            if (profileEditRequest.getName() != null) {
+                user.setName(profileEditRequest.getName());
+            }
+            if (profileEditRequest.getUsername() != null) {
+                if (userRepository.existsByUsername(profileEditRequest.getUsername())) {
+                    throw new IllegalIdentifierException("사용중인 아이디");
+                }
+                user.setUsername(profileEditRequest.getUsername());
+            }
+            if (profileEditRequest.getBio() != null) {
+                user.setBio(profileEditRequest.getBio());
+            }
             userRepository.save(user);
         }
     }
