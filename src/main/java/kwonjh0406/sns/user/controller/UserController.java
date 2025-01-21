@@ -69,29 +69,21 @@ public class UserController {
         }
     }
 
-
-    @PutMapping("/me/profile")
-    public ResponseEntity<ApiResponse<Void>> profileEdit(ProfileEditRequest profileEditRequest) {
+    @PatchMapping("/me/profile")
+    public ResponseEntity<ApiResponse<Void>> profileEdit(@Valid ProfileEditRequest profileEditRequest) {
         try {
             userService.editProfile(profileEditRequest);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(
                             ApiResponse.<Void>builder()
-                                    .message(null)
-                                    .data(null)
-                                    .build()
-                    );
-
+                                    .build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(
                             ApiResponse.<Void>builder()
-                                    .message(null)
-                                    .data(null)
+                                    .message(e.getMessage())
                                     .build()
                     );
         }
     }
-
-
 }
