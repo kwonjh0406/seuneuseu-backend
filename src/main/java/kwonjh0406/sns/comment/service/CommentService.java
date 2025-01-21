@@ -49,6 +49,8 @@ public class CommentService {
                         .user(user)
                         .post(post)
                         .build();
+                post.addReplies();
+                postRepository.save(post);
                 commentRepository.save(comment);
             }
         }

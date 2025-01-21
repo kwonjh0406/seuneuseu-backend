@@ -33,4 +33,8 @@ public class Post {
 
     @CreationTimestamp
     private Timestamp createdAt; // 게시글 작성일자
+
+    public void addReplies() {
+        this.replies++;
+    }
 }
