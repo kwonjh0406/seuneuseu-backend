@@ -1,6 +1,8 @@
 package kwonjh0406.sns.comment.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.transaction.Transactional;
 import kwonjh0406.sns.comment.dto.CommentRequest;
 import kwonjh0406.sns.comment.dto.CommentResponse;
 import kwonjh0406.sns.comment.entity.Comment;
@@ -33,6 +35,7 @@ public class CommentService {
         return responses;
     }
 
+    @Transactional
     public void createComment(Long postId, CommentRequest commentRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
@@ -49,9 +52,18 @@ public class CommentService {
                         .user(user)
                         .post(post)
                         .build();
-                post.addReplies();
-                postRepository.save(post);
-                commentRepository.save(comment);
+                int maxTry = 3;  // 최대 재시도 횟수
+                int currentTry = 0;
+                while (currentTry < maxTry) {
+                    // 낙관적 락 실패 시 재시도
+                    if (postRepository.updateReplies(post) == 0) {
+                        currentTry++;
+                    } else {
+                        commentRepository.save(comment);
+                        break;
+                    }
+                }
+                throw new OptimisticLockException("낙관적 락 재시도 횟수 초과: 댓글 작성 로직");
             }
         }
     }

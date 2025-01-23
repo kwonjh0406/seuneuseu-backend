@@ -34,7 +34,7 @@ public class Post {
     @CreationTimestamp
     private Timestamp createdAt; // 게시글 작성일자
 
-    public void addReplies() {
-        this.replies++;
-    }
+    // 낙관적 락 버전 체크 용도 겸 알고리즘 적용 용도
+    @CreationTimestamp
+    private Timestamp lastCommentedAt;
 }
