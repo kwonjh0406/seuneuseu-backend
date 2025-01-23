@@ -60,7 +60,7 @@ public class CommentService {
                         currentTry++;
                     } else {
                         commentRepository.save(comment);
-                        break;
+                        return;
                     }
                 }
                 throw new OptimisticLockException("낙관적 락 재시도 횟수 초과: 댓글 작성 로직");
