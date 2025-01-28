@@ -1,24 +1,21 @@
 package kwonjh0406.sns.post.controller;
 
+import jakarta.validation.Valid;
 import kwonjh0406.sns.global.dto.ApiResponse;
 import kwonjh0406.sns.post.dto.EditPostRequest;
 import kwonjh0406.sns.post.dto.PostContentDto;
 import kwonjh0406.sns.post.service.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/post")
+@RequestMapping("/api/posts")
+@RequiredArgsConstructor
 public class PostGetController {
 
     private final PostService postService;
-
-    @Autowired
-    public PostGetController(PostService postService) {
-        this.postService = postService;
-    }
 
     @GetMapping("/edit/{postId}")
     public ResponseEntity<ApiResponse<PostContentDto>> getContentByPostId(@PathVariable Long postId) {
@@ -44,15 +41,15 @@ public class PostGetController {
         }
     }
 
-    @PatchMapping("/edit/{postId}")
-    public ResponseEntity<ApiResponse<Void>> editPost(@PathVariable Long postId,@RequestBody EditPostRequest editPostRequest) {
+    @PatchMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> editPost(@PathVariable Long postId, @RequestBody @Valid EditPostRequest editPostRequest) {
         try {
+            System.out.println(editPostRequest.getContent());
             postService.editPostByPostId(postId, editPostRequest.getContent());
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(
                             ApiResponse.<Void>builder()
-                                    .message("Successfully retrieved post content")
                                     .data(null)
                                     .build()
                     );

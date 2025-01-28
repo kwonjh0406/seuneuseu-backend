@@ -20,5 +20,7 @@ public class PostImage {
     @ManyToOne
     private Post post;
 
+    private Long userId;
+
     private String imageUrl;
 }

@@ -20,7 +20,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/api/post")
-    public ResponseEntity<?> createPost(@ModelAttribute CreatePostRequest createPostRequest) {
+    public ResponseEntity<?> createPost(CreatePostRequest createPostRequest) {
 
         try {
             postService.createPost(createPostRequest);
@@ -91,4 +91,6 @@ public class PostController {
                     );
         }
     }
+
+
 }
