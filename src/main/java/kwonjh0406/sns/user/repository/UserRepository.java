@@ -16,6 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT new kwonjh0406.sns.user.dto.SearchUserResponse(u.username, u.name, u.profileImageUrl, u.bio) " +
             "FROM User u")
     List<SearchUserResponse> findAllUsers();
+
     @Query("SELECT new kwonjh0406.sns.user.dto.ProfileEditResponse(" +
             "u.username, u.name, u.profileImageUrl, u.bio) " +
             "FROM User u WHERE u.id = :userId")

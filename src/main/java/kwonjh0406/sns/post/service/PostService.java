@@ -5,6 +5,7 @@ import kwonjh0406.sns.aws.s3.service.S3Service;
 import kwonjh0406.sns.oauth2.dto.CustomOAuth2User;
 import kwonjh0406.sns.post.dto.PostContentDto;
 import kwonjh0406.sns.post.dto.CreatePostRequest;
+import kwonjh0406.sns.post.dto.PostImageResponse;
 import kwonjh0406.sns.post.dto.PostResponse;
 import kwonjh0406.sns.post.entity.Post;
 import kwonjh0406.sns.post.entity.PostImage;
@@ -56,6 +57,7 @@ public class PostService {
                     String imageUrl = s3Service.uploadImageToS3(imageFile);
                     PostImage postImage = PostImage.builder()
                             .imageUrl(imageUrl)
+                            .userId(oAuth2User.getUser().getId())
                             .post(post)
                             .build();
                     postImageRepository.save(postImage);
@@ -165,5 +167,13 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow();
         post.setContent(content);
         postRepository.save(post);
+    }
+
+    public List<PostImageResponse> getPostImagesByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        List<PostImage> postImageList =  postImageRepository.findAllImageResponsesByUserId(user.getId());
+        return postImageList.stream()
+                .map(image -> new PostImageResponse(image.getPost().getId(), image.getImageUrl()))
+                .collect(Collectors.toList());
     }
 }
