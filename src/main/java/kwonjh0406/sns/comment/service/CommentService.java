@@ -67,4 +67,26 @@ public class CommentService {
             }
         }
     }
+
+    public void deleteComment(Long postId, Long commentId) {
+
+        // 임시로 작성된 코드
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            Post post = postRepository.findById(postId).orElseThrow(
+                    () -> new EntityNotFoundException("포스트를 찾을 수 없거나 이미 삭제되었습니다.")
+            );
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof CustomOAuth2User oAuth2User) {
+                Comment comment = commentRepository.findById(commentId).get();
+                User user = oAuth2User.getUser();
+                if (comment.getUser().getUsername().equals(user.getUsername())) {
+                    post.setReplies(post.getReplies() - 1);
+                    postRepository.save(post);
+                    commentRepository.delete(comment);
+                }
+            }
+        }
+    }
 }

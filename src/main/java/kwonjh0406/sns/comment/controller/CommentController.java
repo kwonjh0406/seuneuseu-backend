@@ -33,4 +33,12 @@ public class CommentController {
                 ApiResponse.<Void>builder().message(null).data(null).build()
         );
     }
+
+    @DeleteMapping("/api/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
+        commentService.deleteComment(postId, commentId);
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder().message(null).data(null).build()
+        );
+    }
 }
