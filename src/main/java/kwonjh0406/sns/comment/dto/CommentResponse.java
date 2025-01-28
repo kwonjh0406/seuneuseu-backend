@@ -1,13 +1,13 @@
 package kwonjh0406.sns.comment.dto;
 
 import kwonjh0406.sns.comment.entity.Comment;
-import kwonjh0406.sns.post.util.TimeDifference;
-import lombok.Data;
+import kwonjh0406.sns.util.TimeDifference;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CommentResponse {
-
-    private static final TimeDifference timeDifference = new TimeDifference();
 
     private Long id;
     private Long parentId;
@@ -22,7 +22,7 @@ public class CommentResponse {
         this.parentId = comment.getParentCommentId();
         this.content = comment.getContent();
         this.profileImageUrl = comment.getUser().getProfileImageUrl();
-        this.timeAgo = timeDifference.getTimeDifference(comment.getCreatedAt());
+        this.timeAgo = TimeDifference.getTimeDifference(comment.getCreatedAt());
         this.username = comment.getUser().getUsername();
         this.name = comment.getUser().getName();
     }

@@ -26,13 +26,13 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-    public List<CommentResponse> getComments(Long postId){
-        List<Comment> comments = commentRepository.findByPostId(postId);
-        List<CommentResponse> responses = new ArrayList<>();
-        for (Comment comment : comments) {
-            responses.add(new CommentResponse(comment));
+    public List<CommentResponse> getComments(Long postId) {
+        List<Comment> commentList = commentRepository.findByPostId(postId);
+        List<CommentResponse> commentResponseList = new ArrayList<>();
+        for (Comment comment : commentList) {
+            commentResponseList.add(new CommentResponse(comment));
         }
-        return responses;
+        return commentResponseList;
     }
 
     @Transactional

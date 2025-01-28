@@ -1,4 +1,4 @@
-package kwonjh0406.sns.post.util;
+package kwonjh0406.sns.util;
 
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 public class TimeDifference {
 
-    public String getTimeDifference(Timestamp createdAt) {
+    public static String getTimeDifference(Timestamp createdAt) {
         // 예시: Timestamp 형태로 작성 시간 (2024년 12월 25일 10시)
         // 현재 시간
         LocalDateTime now = LocalDateTime.now();
