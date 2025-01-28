@@ -1,7 +1,7 @@
 package kwonjh0406.sns.post.dto;
 
 import kwonjh0406.sns.post.entity.Post;
-import kwonjh0406.sns.post.util.TimeDifference;
+import kwonjh0406.sns.util.TimeDifference;
 import lombok.Getter;
 
 import java.util.List;
