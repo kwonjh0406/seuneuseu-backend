@@ -41,7 +41,7 @@ public class PostService {
         Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(Sort.Direction.DESC, "id"));
 
         Page<Long> postIdsPage = postRepository.findPostIds(pageable);
-        List<Post> posts = postRepository.findAllByIdsWithImages(postIdsPage.getContent());
+        List<Post> posts = postRepository.findPostsWithPage(postIdsPage.getContent());
 
         return posts.stream()
                 .map(post -> new PostResponse(
