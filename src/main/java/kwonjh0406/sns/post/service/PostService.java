@@ -186,7 +186,7 @@ public class PostService {
 
     public List<PostImageResponse> getPostImagesByUsername(String username) {
         User user = userRepository.findByUsername(username);
-        List<PostImage> postImageList = postImageRepository.findAllImageResponsesByUserId(user.getId());
+        List<PostImage> postImageList = postImageRepository.findAllImageResponsesByUserId(Sort.by(Sort.Direction.DESC, "id"), user.getId());
         return postImageList.stream()
                 .map(image -> new PostImageResponse(image.getPost().getId(), image.getImageUrl()))
                 .collect(Collectors.toList());
