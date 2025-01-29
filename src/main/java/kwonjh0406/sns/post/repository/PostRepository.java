@@ -17,7 +17,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query("SELECT p.id FROM Post p ORDER BY p.id DESC")
     Page<Long> findPostIds(Pageable pageable);
 
-    @Query("SELECT p FROM Post p LEFT JOIN FETCH p.postImages WHERE p.id IN :ids ORDER BY p.id DESC")
-    List<Post> findAllByIdsWithImages(@Param("ids") List<Long> ids);
-
+    @Query("SELECT p FROM Post p " +
+            "LEFT JOIN FETCH p.postImages " +
+            "LEFT JOIN FETCH p.user " +
+            "WHERE p.id IN :ids ORDER BY p.id DESC")
+    List<Post> findPostsWithPage(@Param("ids") List<Long> ids);
 }
