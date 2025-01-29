@@ -2,6 +2,7 @@ package kwonjh0406.sns.post.controller;
 
 import kwonjh0406.sns.global.dto.ApiResponse;
 import kwonjh0406.sns.post.dto.CreatePostRequest;
+import kwonjh0406.sns.post.dto.PageRequestDto;
 import kwonjh0406.sns.post.dto.PostResponse;
 import kwonjh0406.sns.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,19 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+
+    @GetMapping("/api/posts")
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getPosts(PageRequestDto pageRequestDto) {
+        log.info("pageRequest: page: {}, size: {}", pageRequestDto.getPage(), pageRequestDto.getSize());
+        List<PostResponse> postResponseList = postService.getPosts(pageRequestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        ApiResponse.<List<PostResponse>>builder()
+                                .message(null)
+                                .data(postResponseList)
+                                .build()
+                );
+    }
 
     @PostMapping("/api/post")
     public ResponseEntity<?> createPost(CreatePostRequest createPostRequest) {
@@ -37,11 +51,6 @@ public class PostController {
                     new kwonjh0406.sns.post.dto.ApiResponse(500, "서버 오류가 발생했습니다.")
             );
         }
-    }
-
-    @GetMapping("/api/posts")
-    public List<PostResponse> getAllPosts() {
-        return postService.getAllPosts();
     }
 
     @GetMapping("/api/posts/{postId}")

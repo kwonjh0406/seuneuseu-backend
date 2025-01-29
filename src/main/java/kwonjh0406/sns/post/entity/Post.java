@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -30,6 +31,9 @@ public class Post {
     private Long likes; // 좋아요 수
 
     private Long replies; // 댓글 수
+
+    @OneToMany(mappedBy = "post")
+    private List<PostImage> postImages;
 
     @CreationTimestamp
     private Timestamp createdAt; // 게시글 작성일자

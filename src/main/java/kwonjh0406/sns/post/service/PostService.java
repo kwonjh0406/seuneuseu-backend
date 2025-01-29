@@ -3,10 +3,7 @@ package kwonjh0406.sns.post.service;
 import jakarta.persistence.EntityNotFoundException;
 import kwonjh0406.sns.aws.s3.service.S3Service;
 import kwonjh0406.sns.oauth2.dto.CustomOAuth2User;
-import kwonjh0406.sns.post.dto.PostContentDto;
-import kwonjh0406.sns.post.dto.CreatePostRequest;
-import kwonjh0406.sns.post.dto.PostImageResponse;
-import kwonjh0406.sns.post.dto.PostResponse;
+import kwonjh0406.sns.post.dto.*;
 import kwonjh0406.sns.post.entity.Post;
 import kwonjh0406.sns.post.entity.PostImage;
 import kwonjh0406.sns.post.repository.PostImageRepository;
@@ -14,6 +11,9 @@ import kwonjh0406.sns.post.repository.PostRepository;
 import kwonjh0406.sns.user.entity.User;
 import kwonjh0406.sns.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,6 +36,38 @@ public class PostService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
     private final PostImageRepository postImageRepository;
+
+    public List<PostResponse> getPosts(PageRequestDto pageRequestDto) {
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(Sort.Direction.DESC, "id"));
+
+        Page<Long> postIdsPage = postRepository.findPostIds(pageable);
+        List<Post> posts = postRepository.findAllByIdsWithImages(postIdsPage.getContent());
+
+        return posts.stream()
+                .map(post -> new PostResponse(
+                        post,
+                        post.getPostImages().stream()
+                                .map(PostImage::getImageUrl)
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
+//        List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+//
+//        List<PostResponse> postResponses = new ArrayList<>();
+//
+//        for (Post post : posts) {
+//            List<PostImage> postImages = postImageRepository.findByPost(post);
+//
+//            List<String> imageUrls = postImages.stream()
+//                    .map(PostImage::getImageUrl)
+//                    .collect(Collectors.toList());
+//
+//            postResponses.add(new PostResponse(post, imageUrls));
+//        }
+//
+//        return postResponses;
+    }
+
 
     public void createPost(CreatePostRequest createPostRequest) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -86,23 +118,6 @@ public class PostService {
         return postResponses;
     }
 
-    public List<PostResponse> getAllPosts() {
-        List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-
-        List<PostResponse> postResponses = new ArrayList<>();
-
-        for (Post post : posts) {
-            List<PostImage> postImages = postImageRepository.findByPost(post);
-
-            List<String> imageUrls = postImages.stream()
-                    .map(PostImage::getImageUrl)
-                    .collect(Collectors.toList());
-
-            postResponses.add(new PostResponse(post, imageUrls));
-        }
-
-        return postResponses;
-    }
 
     public PostResponse getPostByPostId(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
@@ -171,7 +186,7 @@ public class PostService {
 
     public List<PostImageResponse> getPostImagesByUsername(String username) {
         User user = userRepository.findByUsername(username);
-        List<PostImage> postImageList =  postImageRepository.findAllImageResponsesByUserId(user.getId());
+        List<PostImage> postImageList = postImageRepository.findAllImageResponsesByUserId(user.getId());
         return postImageList.stream()
                 .map(image -> new PostImageResponse(image.getPost().getId(), image.getImageUrl()))
                 .collect(Collectors.toList());
