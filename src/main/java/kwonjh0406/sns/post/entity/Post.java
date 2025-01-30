@@ -28,8 +28,8 @@ public class Post {
     @Lob
     private String content; // 게시글 내용
 
+    // 이 두 값은 언제 한번 int 로 바꿔야할 필요가 있어보임
     private Long likes; // 좋아요 수
-
     private Long replies; // 댓글 수
 
     @OneToMany(mappedBy = "post")
