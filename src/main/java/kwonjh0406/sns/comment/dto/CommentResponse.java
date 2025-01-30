@@ -19,8 +19,8 @@ public class CommentResponse {
     private String name;
     private String timeAgo; // 시간을 문자열로 저장
 
-    public CommentResponse(Long id, Long parentId, String content, String profileImageUrl,
-                           String username, String name, Timestamp createdAt) {
+    public CommentResponse(Long id, Long parentId, String content, Timestamp createdAt, String profileImageUrl,
+                           String username, String name) {
         this.id = id;
         this.parentId = parentId;
         this.content = content;

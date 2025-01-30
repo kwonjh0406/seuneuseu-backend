@@ -10,13 +10,13 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("""
-        SELECT CommentResponse(
-            c.id, c.parentCommentId, c.content, c.createdAt,
-            u.profileImageUrl, u.username, u.name
-        )
-        FROM Comment c
-        JOIN c.user u
-        WHERE c.post.id = :postId
-    """)
+                SELECT new kwonjh0406.sns.comment.dto.CommentResponse(
+                    c.id, c.parentCommentId, c.content, c.createdAt,
+                    u.profileImageUrl, u.username, u.name
+                )
+                FROM Comment c
+                JOIN c.user u
+                WHERE c.post.id = :postId
+            """)
     List<CommentResponse> findByPostId(Long postId);
 }
