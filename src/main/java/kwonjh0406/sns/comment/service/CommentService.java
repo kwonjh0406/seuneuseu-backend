@@ -12,13 +12,14 @@ import kwonjh0406.sns.post.entity.Post;
 import kwonjh0406.sns.post.repository.PostRepository;
 import kwonjh0406.sns.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -32,55 +33,59 @@ public class CommentService {
 
     @Transactional
     public void createComment(Long postId, CommentRequest commentRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // 인증된 사용자가 존재할 때
+        if (principal instanceof CustomOAuth2User oAuth2User) {
+            // 현재 로그인된 사용자
+            User user = oAuth2User.getUser();
+            // 댓글을 작성하려는 게시글 가져올 겸 게시글 존재 확인
             Post post = postRepository.findById(postId).orElseThrow(
-                    () -> new EntityNotFoundException("포스트를 찾을 수 없거나 이미 삭제되었습니다.")
+                    () -> new EntityNotFoundException("게시글이 존재하지 않습니다.")
             );
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof CustomOAuth2User oAuth2User) {
-                // 로그인 한 사용자와 게시글 작성자가 동일한지 확인
-                User user = oAuth2User.getUser();
-                Comment comment = Comment.builder()
-                        .parentCommentId(commentRequest.getParentId())
-                        .content(commentRequest.getContent())
-                        .user(user)
-                        .post(post)
-                        .build();
-                int maxTry = 3;  // 최대 재시도 횟수
-                int currentTry = 0;
-                while (currentTry < maxTry) {
-                    // 낙관적 락 실패 시 재시도
-                    if (postRepository.updateReplies(post) == 0) {
-                        currentTry++;
-                    } else {
-                        commentRepository.save(comment);
-                        return;
-                    }
+            Comment comment = Comment.builder()
+                    .parentCommentId(commentRequest.getParentId())
+                    .content(commentRequest.getContent())
+                    .user(user)
+                    .post(post)
+                    .build();
+            // 낙관적 락 적용 최대 재시도 3회
+            for (int attempts = 0; attempts < 3; attempts++) {
+                System.out.println(postId + ", " + post.getLastCommentedAt().toString());
+                if (postRepository.addReplies(postId, post.getLastCommentedAt()) == 1) {
+                    // 댓글 수 증가에 성공한 경우 댓글 추가 후 성공 응답
+                    commentRepository.save(comment);
+                    return;
                 }
-                throw new OptimisticLockException("낙관적 락 재시도 횟수 초과: 댓글 작성 로직");
             }
+            throw new OptimisticLockException("댓글 작성에 실패했습니다. 다시 시도해 주세요.");
         }
     }
 
+    @Transactional
     public void deleteComment(Long postId, Long commentId) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // 임시로 작성된 코드
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            Post post = postRepository.findById(postId).orElseThrow(
-                    () -> new EntityNotFoundException("포스트를 찾을 수 없거나 이미 삭제되었습니다.")
+        if (principal instanceof CustomOAuth2User oAuth2User) {
+            // 현재 로그인된 사용자
+            User user = oAuth2User.getUser();
+            // 삭제하려는 대상 댓글을 가져옴
+            Comment comment = commentRepository.findById(commentId).orElseThrow(
+                    () -> new EntityNotFoundException("댓글이 존재하지 않습니다.")
             );
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof CustomOAuth2User oAuth2User) {
-                Comment comment = commentRepository.findById(commentId).get();
-                User user = oAuth2User.getUser();
-                if (comment.getUser().getUsername().equals(user.getUsername())) {
-                    post.setReplies(post.getReplies() - 1);
-                    postRepository.save(post);
-                    commentRepository.delete(comment);
+            // 삭제하려는 댓글이 현재 사용자의 댓글이 맞는지 확인
+            if (comment.getUser().getUsername().equals(user.getUsername())) {
+                Post post = postRepository.findById(postId).orElseThrow(
+                        () -> new EntityNotFoundException("포스트를 찾을 수 없거나 이미 삭제되었습니다.")
+                );
+                commentRepository.delete(comment);
+                // 낙관적 락 적용 최대 재시도 3회
+                for (int attempts = 0; attempts < 3; attempts++) {
+                    if (postRepository.deleteReplies(postId, post.getLastCommentedAt()) == 1) {
+                        // 댓글 수 재설정에 성공한 경우 성공 응답
+                        return;
+                    }
                 }
+                throw new OptimisticLockException("댓글 삭제에 실패했습니다. 다시 시도해 주세요.");
             }
         }
     }
