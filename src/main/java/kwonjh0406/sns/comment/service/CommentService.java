@@ -12,14 +12,11 @@ import kwonjh0406.sns.post.entity.Post;
 import kwonjh0406.sns.post.repository.PostRepository;
 import kwonjh0406.sns.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -77,6 +74,8 @@ public class CommentService {
                 Post post = postRepository.findById(postId).orElseThrow(
                         () -> new EntityNotFoundException("포스트를 찾을 수 없거나 이미 삭제되었습니다.")
                 );
+                // 먼저 삭제 후 댓글 수 동기화 수행 -> 삭제 연산은 추가 처럼 단순 댓글 + 1이 아닌 부모 댓글 삭제로 인한 자식 댓글 삭제까지 고려
+                commentRepository.deleteByParentCommentId(comment.getId());
                 commentRepository.delete(comment);
                 // 낙관적 락 적용 최대 재시도 3회
                 for (int attempts = 0; attempts < 3; attempts++) {
