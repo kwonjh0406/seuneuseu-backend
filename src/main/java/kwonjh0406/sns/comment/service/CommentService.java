@@ -27,12 +27,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     public List<CommentResponse> getComments(Long postId) {
-        List<Comment> commentList = commentRepository.findByPostId(postId);
-        List<CommentResponse> commentResponseList = new ArrayList<>();
-        for (Comment comment : commentList) {
-            commentResponseList.add(new CommentResponse(comment));
-        }
-        return commentResponseList;
+        return commentRepository.findByPostId(postId);
     }
 
     @Transactional

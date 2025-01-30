@@ -25,7 +25,6 @@ public class SecurityConfig {
     @Value("${base.url}")
     private String baseUrl;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
