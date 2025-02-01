@@ -79,7 +79,7 @@ public class CommentService {
                 commentRepository.delete(comment);
                 // 낙관적 락 적용 최대 재시도 3회
                 for (int attempts = 0; attempts < 3; attempts++) {
-                    if (postRepository.deleteReplies(postId, post.getLastCommentedAt()) == 1) {
+                    if (postRepository.updateReplies(postId, post.getLastCommentedAt()) == 1) {
                         // 댓글 수 재설정에 성공한 경우 성공 응답
                         return;
                     }
