@@ -53,7 +53,6 @@ public class SecurityConfig {
                         .logoutSuccessUrl(baseUrl + "/login").permitAll()
                 )
                 .addFilterBefore(isNewCheckFilter, UsernamePasswordAuthenticationFilter.class); // 초기 설정을 마치지 않은 사용자로 부터 요청이 들어오면 로그아웃 시킴
-
         return http.build();
     }
 
