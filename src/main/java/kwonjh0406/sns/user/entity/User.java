@@ -29,9 +29,9 @@ public class User {
 
     String bio; // 프로필 한줄소개
 
-    Long Follower; // 나를 팔로잉하는 사용자 수
+    int Follower; // 나를 팔로잉하는 사용자 수
 
-    Long Following; // 내가 팔로우하는 사용자 수
+    int Following; // 내가 팔로우하는 사용자 수
 
     @Column(unique = true)
     String email;

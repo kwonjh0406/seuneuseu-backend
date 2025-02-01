@@ -1,4 +1,4 @@
-package kwonjh0406.sns.global.exception;
+package kwonjh0406.sns.user.exception;
 
 public class UsernameAlreadyExistsException extends RuntimeException {
     public UsernameAlreadyExistsException(String message) {

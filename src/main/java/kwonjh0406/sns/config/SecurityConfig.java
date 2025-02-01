@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // 이제 이 외에 요청들은 인증 체크를 서비스 레이어에서 하지 말자.
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

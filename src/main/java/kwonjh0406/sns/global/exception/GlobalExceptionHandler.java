@@ -15,6 +15,15 @@ import java.util.Optional;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(
+                        ApiResponse.<Void>builder()
+                                .message("다시 시도해 주세요.")
+                                .build()
+                );
+    }
 
     // 자원 경쟁으로 인한 실패 시
     @ExceptionHandler(OptimisticLockException.class)
