@@ -46,5 +46,5 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             ), p.lastCommentedAt = CURRENT_TIMESTAMP
             WHERE p.id = :id AND p.lastCommentedAt = :lastCommentedAt
             """)
-    int deleteReplies(Long id, Timestamp lastCommentedAt);
+    int updateReplies(Long id, Timestamp lastCommentedAt);
 }
