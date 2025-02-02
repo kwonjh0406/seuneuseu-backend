@@ -15,5 +15,8 @@ spring:
   config:
     import: application-sec-dev.yaml
 
-server:
-  port: 8080
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG
