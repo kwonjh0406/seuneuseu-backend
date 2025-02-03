@@ -30,8 +30,19 @@ public class FollowController {
 
     @PostMapping("/users/{username}/follow")
     public ResponseEntity<ApiResponse<Void>> follow(@PathVariable String username) {
-        System.out.println(username);
         followService.follow(username);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        ApiResponse.<Void>builder()
+                                .message(null)
+                                .data(null)
+                                .build()
+                );
+    }
+
+    @DeleteMapping("/users/{username}/follow")
+    public ResponseEntity<ApiResponse<Void>> unFollow(@PathVariable String username) {
+        followService.unFollow(username);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
                         ApiResponse.<Void>builder()
