@@ -19,7 +19,7 @@ public class IsNewCheckFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getRequestURI().equals("/api/user/welcome-profile-setup")) {
+        if (request.getRequestURI().equals("/api/users")) {
             filterChain.doFilter(request, response); // 필터를 거치지 않고 바로 다음 필터로 이동
             return;
         }
@@ -34,9 +34,6 @@ public class IsNewCheckFilter extends OncePerRequestFilter {
 
                 if (principal instanceof CustomOAuth2User oAuth2User) { // 로그인 된 사용자가 OAuth2 사용자인 경우
                     if (oAuth2User.getUser().getIsNew()) { // 사용자가 초기 설정을 마치지 않은 경우
-
-                        System.out.println("세션 날릴게~");
-
                         request.getSession().invalidate(); // 세션을 해제 시킴
                         SecurityContextHolder.clearContext();
                         return;

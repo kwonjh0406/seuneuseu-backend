@@ -34,7 +34,6 @@ public class FollowService {
 
     @Transactional
     public void follow(String username) {
-
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof CustomOAuth2User oAuth2User) {
@@ -48,6 +47,22 @@ public class FollowService {
             // 동시성 제어 해결 필요 현 코드는 초안
             follower.setFollowing(follower.getFollowing() + 1);
             following.setFollower(follower.getFollower() + 1);
+            userRepository.save(following);
+            userRepository.save(follower);
+        }
+    }
+
+    @Transactional
+    public void unFollow(String username) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof CustomOAuth2User oAuth2User) {
+            User follower = oAuth2User.getUser();
+            User following = userRepository.findByUsername(username);
+            followRepository.deleteByFollowerAndFollowing(follower,following);
+            // 동시성 제어 해결 필요 현 코드는 초안
+            follower.setFollowing(follower.getFollowing() - 1);
+            following.setFollower(following.getFollower() - 1);
             userRepository.save(following);
             userRepository.save(follower);
         }
