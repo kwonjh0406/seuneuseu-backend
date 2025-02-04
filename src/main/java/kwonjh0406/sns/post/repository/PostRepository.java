@@ -1,6 +1,7 @@
 package kwonjh0406.sns.post.repository;
 
 import jakarta.transaction.Transactional;
+import kwonjh0406.sns.follow.entity.Follow;
 import kwonjh0406.sns.post.entity.Post;
 import kwonjh0406.sns.user.entity.User;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,12 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             "LEFT JOIN FETCH p.user " +
             "WHERE p.id IN :ids ORDER BY p.id DESC")
     List<Post> findPostsWithPage(@Param("ids") List<Long> ids);
+
+    @Query("SELECT p FROM Post p " +
+            "LEFT JOIN FETCH p.postImages " +
+            "LEFT JOIN FETCH p.user " +
+            "WHERE p.user IN :followingList ORDER BY p.id DESC")
+    List<Post> findPostsByFollowingWithPage(List<User> followingList);
 
     // 아래는 댓글 동기화
 

@@ -3,11 +3,14 @@ package kwonjh0406.sns.follow.controller;
 import kwonjh0406.sns.follow.dto.FollowCheck;
 import kwonjh0406.sns.follow.service.FollowService;
 import kwonjh0406.sns.global.dto.ApiResponse;
+import kwonjh0406.sns.post.dto.PostResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -48,6 +51,18 @@ public class FollowController {
                         ApiResponse.<Void>builder()
                                 .message(null)
                                 .data(null)
+                                .build()
+                );
+    }
+
+    @GetMapping("/users/me/following/posts")
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getFollowingPosts() {
+        List<PostResponse> postResponseList =  followService.getFollowingPosts();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        ApiResponse.<List<PostResponse>>builder()
+                                .message(null)
+                                .data(postResponseList)
                                 .build()
                 );
     }
