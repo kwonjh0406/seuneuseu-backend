@@ -33,7 +33,7 @@ public class PostController {
                 );
     }
 
-    @PostMapping("/api/post")
+    @PostMapping("/api/posts")
     public ResponseEntity<?> createPost(CreatePostRequest createPostRequest) {
 
         try {

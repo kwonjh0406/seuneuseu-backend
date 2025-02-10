@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
-public class PostGetController {
+public class PostEditController {
 
     private final PostService postService;
 
