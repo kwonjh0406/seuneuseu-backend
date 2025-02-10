@@ -1,8 +1,13 @@
-# SNS 플랫폼 스느스 프로젝트 설명 문서입니다.
-프론트엔드 + 백엔드 + 인프라 전 과정 개발을 진행 중인 개인 프로젝트입니다.
-배포 후 발생하는 문제들을 찾고 해결하고 있습니다.
+# SNS 플랫폼 스느스
 
-https://seuneuseu.com 로 접속 가능합니다.
+# 소개
+프론트엔드, 백엔드 개발 및 퍼블릭 클라우드 환경을 이용한 배포를 진행 중인 개인 프로젝트입니다.<br>
+2024년 12월부터 진행 중인 프로젝트이며 배포 후에도 지속적으로 문제를 찾아 해결하거나 서비스 업데이트를 진행하고 있습니다.
+
+https://seuneuseu.com 를 통해 직접 이용해 보실 수 있습니다!
+
+# 서비스 아키텍처
+![제목 없는 다이어그램-2-2 drawio](https://github.com/user-attachments/assets/59ca8841-7466-47c1-a8e8-2522bb45729d)
 
 # 기능
 - 구글 로그인
@@ -35,27 +40,16 @@ https://seuneuseu.com 로 접속 가능합니다.
     - 백엔드에서 jpg로 확장자 변환 및 압축 후 S3로 업로드                          << EC2 프리티어 인스턴스 기준으로 서버에 부담을 주고싶지는 않아서 X
     - 백엔드 -> S3로 전송 후 S3에서 lambda로 처리                                 << AWS 람다 이용 비용 원치 않아서 X
 
-# 남은 작업
-- 활동 알림
-- 홈 게시글 알리고리즘 구상 후 적용
-- 리팩토링
-- 쿼리 최적화, 팔로우/팔로잉 동시성 문제 해결
+# 🛠️ 기술 스택
+### 백엔드
+- JAVA / Spring Boot(Spring Data JPA, Spring Security)
+### 프론트엔드
+- Typescript / Next.js
+### 데이터베이스
+- MySQL 8.4
+### 인프라 및 서버
+- AWS(EC2, S3, ELB, Route53), GCP(Cloud SQL), Nginx
+### 도구
+- Git, Postman
 
-# 기술 스택
-- [백엔드/프레임워크] Spring Boot
-  - Spring Data JPA, Spring Security, Spring Web MVC
-- [백엔드/언어] JAVA 21
-- [프론트엔드/프레임워크] Next.js
-  - shadcn/ui
-- [백엔드/데이터베이스] MySQL 8.4
-- [인프라/퍼블릭클라우드] AWS
-  - EC2, ELB(ALB, 비용 문제로 인한 인스턴스 로드밸런싱은 X, HTTPS 통신 지원을 위해 사용), Route53
-- [인프라/퍼블릭클라우드] GCP
-  - Cloud SQL
-- [도구] Git
-- [도구] Postman
-- [백엔드/서버] Nginx
 
-# 서비스 아키텍처
-Github Actions는 아직 사용되지 않았습니다.
-![제목 없는 다이어그램-2-2 drawio](https://github.com/user-attachments/assets/59ca8841-7466-47c1-a8e8-2522bb45729d)
