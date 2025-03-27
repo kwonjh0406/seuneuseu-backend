@@ -1,15 +1,19 @@
 # SNS 플랫폼 스느스
 
-## 프로젝트를 하며 느낀 문제점
-- 테스트 케이스를 작성하지 않는다. < 테스트는 필수인 거 같다. 이 부분에 대해서 강점을 가지도록 공부하자.
+## 소개
+2024년 12월에 시작된 프로젝트이며, 개발부터 운영까지의 전 과정을 경험해 보기 위해 진행한 개인 프로젝트입니다.
 
-# 소개
-프론트엔드, 백엔드 개발 및 퍼블릭 클라우드 환경을 이용한 배포를 진행 중인 개인 프로젝트입니다.<br>
-2024년 12월부터 진행 중인 프로젝트이며 배포 후에도 지속적으로 문제를 찾아 해결하거나 서비스 업데이트를 진행하고 있습니다.
+서비스 접속 경로 > https://seuneuseu.com
 
-https://seuneuseu.com 를 통해 직접 이용해 보실 수 있습니다!
+## 기술 스택
+AWS(EC2, S3, ELB, Route 53, VPC), GCP, Oracle Cloud, Java/Spring Boot, Next.js, Nginx, MySQL
 
-# 서비스 아키텍처
+## 이슈
+- 발생 (2025.03.27) Cloud SQL GCP 프리티어 종료로 인한 데이터베이스 서버 가동 중단
+  - 해결 (2025.03.28) 데이터베이스 서버 Oracle Cloud로 마이그레이션하여 해결
+- AWS ALB 
+---
+## 서비스 아키텍처
 ![제목 없는 다이어그램-2-2 drawio](https://github.com/user-attachments/assets/59ca8841-7466-47c1-a8e8-2522bb45729d)
 
 # 기능
@@ -40,15 +44,3 @@ https://seuneuseu.com 를 통해 직접 이용해 보실 수 있습니다!
       - heic2any 라이브러리 이용 중 최신 아이폰 기종의 heic는 변환이 되지 않는 문제가 있음. issue 해결되지 않음, 따라서 heic-to 라이브러리를 이용
     - 백엔드에서 jpg로 확장자 변환 및 압축 후 S3로 업로드
     - 백엔드 -> S3로 전송 후 S3에서 lambda로 처리
-
-# 🛠️ 기술 스택
-### 백엔드
-- JAVA / Spring Boot(Spring Data JPA, Spring Security)
-### 프론트엔드
-- Typescript / Next.js
-### 데이터베이스
-- MySQL 8.4
-### 인프라 및 서버
-- AWS(EC2, S3, ELB, Route53), GCP(Cloud SQL), Nginx
-### 도구
-- Git, Postman
