@@ -11,14 +11,18 @@ AWS(EC2, S3, ELB, Route 53, VPC), GCP, Oracle Cloud, Java/Spring Boot, Next.js, 
 ## 이슈
 - 발생 (2025.03.27) Cloud SQL GCP 프리티어 종료로 인한 데이터베이스 서버 가동 중단
   - ~~해결 (2025.03.28) 데이터베이스 서버 Oracle Cloud로 마이그레이션~~
-  - 해결 (2025.03.30) 전체 서비스 Oracle Cloud로 마이그레이션 완료
+  - 해결 (2025.03.30) 전체 서버 Oracle Cloud로 마이그레이션 완료, Route 53 -> CloudFlare 이전
+    - 효과: 월 9달러 지출 -> 0달러 지출 ( 비용 감면 100% )
+
+## 인프라 구성
+- 현버전
+![new](https://github.com/user-attachments/assets/7d21b516-2874-49f9-b9fd-fec83ab3d913)
+- 구버전
+![old](https://github.com/user-attachments/assets/59ca8841-7466-47c1-a8e8-2522bb45729d)
 
 ---
-## 서비스 아키텍처
-![제목 없는 다이어그램-2-2 drawio](https://github.com/user-attachments/assets/59ca8841-7466-47c1-a8e8-2522bb45729d)
 
-
-# 기능
+## 기능
 - 구글 로그인
 - 게시글 작성/수정/삭제
 - 댓글 및 답글 작성/삭제
