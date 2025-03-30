@@ -3,18 +3,20 @@
 ## 소개
 2024년 12월에 시작된 프로젝트이며, 개발부터 운영까지의 전 과정을 경험해 보기 위해 진행한 개인 프로젝트입니다.
 
-서비스 접속 경로 > https://seuneuseu.com
+서비스 이용 > https://www.seuneuseu.com
 
 ## 기술 스택
 AWS(EC2, S3, ELB, Route 53, VPC), GCP, Oracle Cloud, Java/Spring Boot, Next.js, Nginx, MySQL
 
 ## 이슈
 - 발생 (2025.03.27) Cloud SQL GCP 프리티어 종료로 인한 데이터베이스 서버 가동 중단
-  - 해결 (2025.03.28) 데이터베이스 서버 Oracle Cloud로 마이그레이션하여 해결
-- AWS ALB 
+  - ~~해결 (2025.03.28) 데이터베이스 서버 Oracle Cloud로 마이그레이션~~
+  - 해결 (2025.03.30) 전체 서비스 Oracle Cloud로 마이그레이션 완료
+
 ---
 ## 서비스 아키텍처
 ![제목 없는 다이어그램-2-2 drawio](https://github.com/user-attachments/assets/59ca8841-7466-47c1-a8e8-2522bb45729d)
+
 
 # 기능
 - 구글 로그인
