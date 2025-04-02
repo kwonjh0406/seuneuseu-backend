@@ -16,7 +16,7 @@ AWS(EC2, S3, ELB, Route 53, VPC), GCP, Oracle Cloud, Java/Spring Boot, Next.js, 
 
 ## 인프라 구성
 - 현버전
-![new](https://github.com/user-attachments/assets/7d21b516-2874-49f9-b9fd-fec83ab3d913)
+![new](https://github.com/user-attachments/assets/dbbaf704-c2ef-45cb-a821-aaed7cd07489)
 - 구버전
 ![old](https://github.com/user-attachments/assets/59ca8841-7466-47c1-a8e8-2522bb45729d)
 
