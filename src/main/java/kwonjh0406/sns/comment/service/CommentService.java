@@ -7,6 +7,7 @@ import kwonjh0406.sns.comment.dto.CommentRequest;
 import kwonjh0406.sns.comment.dto.CommentResponse;
 import kwonjh0406.sns.comment.entity.Comment;
 import kwonjh0406.sns.comment.repository.CommentRepository;
+import kwonjh0406.sns.notification.Notification;
 import kwonjh0406.sns.notification.NotificationService;
 import kwonjh0406.sns.oauth2.dto.CustomOAuth2User;
 import kwonjh0406.sns.post.entity.Post;
@@ -41,6 +42,10 @@ public class CommentService {
             Post post = postRepository.findById(postId).orElseThrow(
                     () -> new EntityNotFoundException("게시글이 존재하지 않습니다.")
             );
+
+            notificationService.createCommentNotification(user, post.getUser(), commentRequest.getContent(), post.getId());
+
+
 
 
 
