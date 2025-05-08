@@ -1,4 +1,4 @@
-package kwonjh0406.sns.aws.s3.service;
+package kwonjh0406.sns.application.aws;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;

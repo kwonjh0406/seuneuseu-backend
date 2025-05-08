@@ -1,6 +1,6 @@
 package kwonjh0406.sns.user.service;
 
-import kwonjh0406.sns.aws.s3.service.S3Service;
+import kwonjh0406.sns.application.aws.S3Service;
 import kwonjh0406.sns.user.exception.UsernameAlreadyExistsException;
 import kwonjh0406.sns.oauth2.dto.CustomOAuth2User;
 import kwonjh0406.sns.user.dto.*;

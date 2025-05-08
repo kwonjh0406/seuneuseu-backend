@@ -12,7 +12,7 @@ spring:
     open-in-view: false
 
   config:
-    import: application-sec-dev.yaml
+    import: application-sec-pro.yaml
 
 #logging:
 #  level:
