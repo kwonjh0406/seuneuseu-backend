@@ -1,25 +1,17 @@
 package kwonjh0406.sns.application.aws;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Service
@@ -32,50 +24,58 @@ public class S3Service {
     private String bucket;
 
     public String uploadImageToS3(MultipartFile image) throws IOException {
-        String originalFilename = image.getOriginalFilename(); //원본 파일 명
-        String extention = originalFilename.substring(originalFilename.lastIndexOf(".")); //확장자 명
+        // 이미지 원본 파일 이름
+        String originalFilename = image.getOriginalFilename();
+        if (originalFilename == null) {
+            throw new IllegalArgumentException("Original filename must not be null");
+        }
+        // 이미지 확장자
+        String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        // UUID + 이미지 원본 이름으로 S3 객체 키 생성
+        String s3FileName = UUID.randomUUID().toString().substring(0, 10) + "_" + originalFilename;
 
-        String s3FileName = UUID.randomUUID().toString().substring(0, 10) + originalFilename; //변경된 파일 명
+        byte[] bytes = image.getBytes();
 
-        InputStream is = image.getInputStream();
-        byte[] bytes = IOUtils.toByteArray(is);
+        PutObjectRequest putRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(s3FileName)
+                .acl(ObjectCannedACL.PUBLIC_READ)
+                .contentType("image/" + extension)
+                .build();
 
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType("image/" + extention);
-        metadata.setContentLength(bytes.length);
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-
-        try{
-            PutObjectRequest putObjectRequest =
-                    new PutObjectRequest(bucket, s3FileName, byteArrayInputStream, metadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead);
-            amazonS3.putObject(putObjectRequest); // put image to S3
-        }catch (Exception e){
-            throw new IOException("asdf");
-        }finally {
-            byteArrayInputStream.close();
-            is.close();
+        try {
+            s3Client.putObject(putRequest, RequestBody.fromBytes(bytes));
+        } catch (Exception e) {
+            throw new IOException("Failed to upload image to S3", e);
         }
 
-        return amazonS3.getUrl(bucket, s3FileName).toString();
+        return s3Client.utilities()
+                .getUrl(GetUrlRequest.builder().bucket(bucket).key(s3FileName).build())
+                .toString();
     }
 
-    public void deleteImageFromS3(String imageAddress){
-        String key = getKeyFromImageAddress(imageAddress);
-        try{
-            amazonS3.deleteObject(new DeleteObjectRequest(bucket, key));
-        }catch (Exception e){
-            return;
+
+    public void deleteImageFromS3(String imageUrl) {
+        String key = getKeyFromImageAddress(imageUrl);
+        try {
+            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build();
+            s3Client.deleteObject(deleteRequest);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete image from S3: " + key, e);
         }
     }
 
-    private String getKeyFromImageAddress(String imageAddress){
-        try{
-            URL url = new URL(imageAddress);
-            String decodingKey = URLDecoder.decode(url.getPath(), "UTF-8");
-            return decodingKey.substring(1); // 맨 앞의 '/' 제거
-        }catch (MalformedURLException | UnsupportedEncodingException e){
-            return null;
+    private String getKeyFromImageAddress(String imageUrl) {
+        try {
+            URI uri = new URI(imageUrl);
+            String path = uri.getPath();
+            String decodedPath = URLDecoder.decode(path, StandardCharsets.UTF_8);
+            return decodedPath.startsWith("/") ? decodedPath.substring(1) : decodedPath;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid image URL format: " + imageUrl, e);
         }
     }
 }
