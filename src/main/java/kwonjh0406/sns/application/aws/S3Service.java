@@ -6,10 +6,12 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,14 +23,10 @@ import java.net.URLDecoder;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class S3Service {
 
-    private final AmazonS3 amazonS3;
-
-    @Autowired
-    public S3Service(AmazonS3 amazonS3) {
-        this.amazonS3 = amazonS3;
-    }
+    private final S3Client s3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
