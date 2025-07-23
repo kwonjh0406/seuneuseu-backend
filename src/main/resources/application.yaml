@@ -1,6 +1,8 @@
 spring:
   application:
     name: seuneuseu
+  profiles:
+    active: sec
 
 
 
@@ -13,8 +15,6 @@ spring:
       hibernate.hibernate.format_sql: true
     open-in-view: false
 
-  config:
-    import: classpath:application-sec.yaml
 
 #logging:
 #  level:
