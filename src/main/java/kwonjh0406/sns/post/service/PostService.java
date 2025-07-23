@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import kwonjh0406.sns.application.aws.S3Service;
 import kwonjh0406.sns.oauth2.dto.CustomOAuth2User;
 import kwonjh0406.sns.post.dto.*;
+import kwonjh0406.sns.post.dto.request.CreatePostRequest;
 import kwonjh0406.sns.post.entity.Post;
 import kwonjh0406.sns.post.entity.PostImage;
 import kwonjh0406.sns.post.repository.PostImageRepository;

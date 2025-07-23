@@ -1,7 +1,7 @@
 package kwonjh0406.sns.post.controller;
 
 import kwonjh0406.sns.global.dto.ApiResponse;
-import kwonjh0406.sns.post.dto.CreatePostRequest;
+import kwonjh0406.sns.post.dto.request.CreatePostRequest;
 import kwonjh0406.sns.post.dto.PageRequestDto;
 import kwonjh0406.sns.post.dto.PostResponse;
 import kwonjh0406.sns.post.service.PostService;
