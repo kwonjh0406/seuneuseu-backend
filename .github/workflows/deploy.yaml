@@ -44,6 +44,6 @@ jobs:
       - name: EC2에서 실행 (기존 프로세스 종료 및 재시작)
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_HOST }} << 'EOF'
-            pkill -f 'java -jar /home/ec2-user/app.jar' || true
-            nohup java -jar /home/ubuntu/app.jar --spring.config.additional-location=/home/ubuntu/application-sec.yaml > /home/ec2-user/app.log 2>&1 &
+            pkill -f 'java -jar /home/ubuntu/app.jar' || true
+            nohup java -jar /home/ubuntu/app.jar --spring.config.additional-location=/home/ubuntu/application-sec.yaml > /home/ubuntu/app.log 2>&1 &
           EOF
