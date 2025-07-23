@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -34,23 +35,10 @@ public class PostController {
     }
 
     @PostMapping("/api/posts")
-    public ResponseEntity<?> createPost(CreatePostRequest createPostRequest) {
-
-        try {
-            postService.createPost(createPostRequest);
-            return ResponseEntity.status(201).body(
-                    new kwonjh0406.sns.post.dto.ApiResponse(201, "게시글이 성공적으로 작성되었습니다.")
-            );
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(401).body(
-                    new kwonjh0406.sns.post.dto.ApiResponse(401, "인증되지 않은 사용자입니다.")
-            );
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return ResponseEntity.status(500).body(
-                    new kwonjh0406.sns.post.dto.ApiResponse(500, "서버 오류가 발생했습니다.")
-            );
-        }
+    public ResponseEntity<ApiResponse<Void>> createPost(@ModelAttribute CreatePostRequest createPostRequest) throws IOException {
+        postService.createPost(createPostRequest);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("게시물이 성공적으로 생성되었습니다.", null));
     }
 
     @GetMapping("/api/posts/{postId}")

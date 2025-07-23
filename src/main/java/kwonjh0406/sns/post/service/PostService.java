@@ -11,6 +11,7 @@ import kwonjh0406.sns.post.repository.PostImageRepository;
 import kwonjh0406.sns.post.repository.PostRepository;
 import kwonjh0406.sns.user.entity.User;
 import kwonjh0406.sns.user.repository.UserRepository;
+import kwonjh0406.sns.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -71,32 +72,27 @@ public class PostService {
 
 
     public void createPost(CreatePostRequest createPostRequest) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new AuthenticationException("인증되지 않은 사용자입니다.");
-        }
+        User currentUser = SecurityUtil.getCurrentUser();
 
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof CustomOAuth2User oAuth2User) {
-            Post post = Post.builder()
-                    .content(createPostRequest.getContent())
-                    .user(oAuth2User.getUser())
-                    .likes(0L)
-                    .replies(0L)
-                    .build();
-            postRepository.save(post);
-            if (createPostRequest.getImages() != null) {
-                for (MultipartFile imageFile : createPostRequest.getImages()) {
-                    String imageUrl = s3Service.uploadImageToS3(imageFile);
-                    PostImage postImage = PostImage.builder()
-                            .imageUrl(imageUrl)
-                            .userId(oAuth2User.getUser().getId())
-                            .post(post)
-                            .build();
-                    postImageRepository.save(postImage);
-                }
+        Post post = Post.builder()
+                .content(createPostRequest.getContent())
+                .user(currentUser)
+                .likes(0L)
+                .replies(0L)
+                .build();
+        postRepository.save(post);
+        if (createPostRequest.getImages() != null) {
+            for (MultipartFile imageFile : createPostRequest.getImages()) {
+                String imageUrl = s3Service.uploadImageToS3(imageFile);
+                PostImage postImage = PostImage.builder()
+                        .imageUrl(imageUrl)
+                        .userId(currentUser.getId())
+                        .post(post)
+                        .build();
+                postImageRepository.save(postImage);
             }
         }
+
     }
 
     public List<PostResponse> getPostsByUsername(String username) {

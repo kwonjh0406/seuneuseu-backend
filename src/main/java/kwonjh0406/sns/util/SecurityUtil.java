@@ -21,4 +21,22 @@ public class SecurityUtil {
         return null;
     }
 
+    public static Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof CustomOAuth2User oAuth2User) {
+            if (oAuth2User.getUser() != null) {
+                return oAuth2User.getUser().getId();
+            }
+        }
+
+        return null;
+    }
+
 }
