@@ -1,0 +1,50 @@
+name: Gradle Build and Deploy with Secret Config
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v3
+
+      - name: JDK 21 설정
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: application-sec.yaml 파일 생성
+        run: |
+          echo "${{ secrets.APPLICATION_SEC_YAML }}" > application-sec.yaml
+          # 파일 권한 제한 (선택)
+          chmod 600 application-sec.yaml
+
+      - name: Gradlew 실행 권한 부여
+        run: chmod +x gradlew
+
+      - name: Gradle 빌드
+        run: ./gradlew clean bootJar -x test
+
+      - name: SSH 키 설정
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: 빌드 파일 및 application-sec.yaml EC2 전송
+        run: |
+          scp -o StrictHostKeyChecking=no build/libs/seuneuseu-0.0.1-SNAPSHOT.jar ec2-user@${{ secrets.EC2_HOST }}:/home/ubuntu/app.jar
+          scp -o StrictHostKeyChecking=no application-sec.yaml ec2-user@${{ secrets.EC2_HOST }}:/home/ubuntu/application-sec.yaml
+
+      - name: EC2에서 실행 (기존 프로세스 종료 및 재시작)
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            pkill -f 'java -jar /home/ec2-user/app.jar' || true
+            nohup java -jar /home/ec2-user/app.jar --spring.config.additional-location=/home/ec2-user/application-sec.yaml > /home/ec2-user/app.log 2>&1 &
+          EOF
